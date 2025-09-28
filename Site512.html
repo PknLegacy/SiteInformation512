@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F512 - SCP Foundation Division</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #2d2d2d;
+            --accent-color: #ff3c3c;
+            --text-color: #e0e0e0;
+            --warning-color: #ff9500;
+            --success-color: #4caf50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Disable right-click */
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Loading screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 5px;
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            animation: loading 2s forwards;
+        }
+
+        @keyframes loading {
+            to { width: 100%; }
+        }
+
+        /* Header */
+        header {
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .settings-btn:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main content */
+        main {
+            padding: 40px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 60, 60, 0.3);
+        }
+
+        /* Information section */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .info-card {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 25px;
+            border-left: 4px solid var(--accent-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .info-card p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .info-card ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .info-card ul li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .info-card ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        /* SCP Knowledge section */
+        .knowledge-section {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .knowledge-section h3 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .knowledge-item {
+            background-color: var(--primary-color);
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .knowledge-item:hover {
+            background-color: #333;
+            transform: scale(1.03);
+        }
+
+        .knowledge-item i {
+            font-size: 36px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .knowledge-item h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-item p {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        /* Join section */
+        .join-section {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .join-section h3 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .join-section p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            border: 2px solid var(--accent-color);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        .modal h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: var(--text-color);
+            font-family: inherit;
+        }
+
+        .verification-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .verification-puzzle {
+            width: 300px;
+            height: 150px;
+            background-color: var(--primary-color);
+            border: 1px solid #444;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .puzzle-piece {
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            position: absolute;
+            cursor: grab;
+            border-radius: 4px;
+        }
+
+        .puzzle-slot {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed #666;
+            position: absolute;
+            border-radius: 4px;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease-out;
+            z-index: 1001;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification h4 {
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background-color: var(--secondary-color);
+            border-left: 2px solid var(--accent-color);
+            padding: 30px;
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-header h3 {
+            font-size: 22px;
+            color: var(--accent-color);
+        }
+
+        .close-settings {
+            font-size: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-settings:hover {
+            color: var(--accent-color);
+        }
+
+        .setting-item {
+            margin-bottom: 25px;
+        }
+
+        .setting-item h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .setting-item input, .setting-item select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: var(--text-color);
+            font-family: inherit;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .4s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            padding: 30px;
+            text-align: center;
+            border-top: 2px solid var(--accent-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Hidden codes */
+        .hidden-code {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            --primary-color: #0a0a0a;
+            --secondary-color: #1a1a1a;
+            --text-color: #f0f0f0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            nav ul {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            .hero-section h2 {
+                font-size: 28px;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Fullscreen button */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+            z-index: 99;
+        }
+
+        .fullscreen-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Terminal style */
+        .terminal {
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            border: 1px solid #444;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .terminal-button.red {
+            background-color: #ff5f56;
+        }
+
+        .terminal-button.yellow {
+            background-color: #ffbd2e;
+        }
+
+        .terminal-button.green {
+            background-color: #27c93f;
+        }
+
+        .terminal-title {
+            margin-left: 10px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .terminal-body {
+            color: #4af626;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+        }
+
+        .terminal-line::before {
+            content: '> ';
+            color: #4af626;
+        }
+
+        /* SCP classification badges */
+        .scp-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .scp-safe {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .scp-euclid {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .scp-keter {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .scp-thaumiel {
+            background-color: #9c27b0;
+            color: white;
+        }
+
+        /* Notification permission banner */
+        .notification-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--secondary-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid var(--accent-color);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification-banner.show {
+            transform: translateY(0);
+        }
+
+        .notification-banner p {
+            margin-right: 20px;
+        }
+
+        .notification-banner button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .allow-btn {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .deny-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">INITIALIZING F512 SYSTEM...</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="https://picsum.photos/seed/f512logo/50/50.jpg" alt="F512 Logo">
+            <h1>F512 DIVISION</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="https://pknlegacy.github.io/SCP-Foundation512_HomePage/">Home</a></li>
+                <li><a href="https://pknlegacy.github.io/SCP-Terminal512/">Terminal Access</a></li>
+                <li><a href="#knowledge">SCP Knowledge</a></li>
+                <li><a href="#protocols">Protocols</a></li>
+                <li><a href="#join">Join F512</a></li>
+            </ul>
+        </nav>
+        <button class="settings-btn" id="settingsBtn"><i class="fas fa-cog"></i></button>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <!-- Hero section -->
+        <section class="hero-section">
+            <h2>Willkommen bei F512</h2>
+            <p>F512 ist eine spezialisierte Organisation unter der Leitung von Caylen Ulver, die sich der Erforschung, Eindämmung und Sicherung anomaler Objekte und Wesen widmet. Unsere operatives Hauptquartier koordiniert Online-Operationen auf TikTok und verwaltet alle angeschlossenen Terminals.</p>
+            <button class="cta-button" id="learnMoreBtn">Mehr Erfahren</button>
+        </section>
+
+        <!-- Information section -->
+        <section class="info-section" id="about">
+            <div class="info-card">
+                <h3>Über F512</h3>
+                <p>F512 ist eine Elite-Einheit innerhalb der SCP Foundation, spezialisiert auf Feldoperationen in hochriskanten Umgebungen. Unter der Leitung von Caylen Ulver hat sich F512 einen Ruf für Effizienz und Präzision bei der Handhabung von Keter- und Thaumiel-Klassifizierten Objekten erworben.</p>
+                <ul>
+                    <li>Leitung: Caylen Ulver</li>
+                    <li>Online-Verbreitung: TikTok</li>
+                    <li>Spezialgebiet: Feldoperationen</li>
+                    <li>Status: Aktiv</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Unsere Mission</h3>
+                <p>Die primäre Mission von F512 ist die Sicherung und Eindämmung anomaler Objekte und Wesen, die eine erhebliche Bedrohung für die Menschheit darstellen. Wir operieren unter strengster Geheimhaltung und nutzen fortschrittliche Technologien und Protokolle.</p>
+                <ul>
+                    <li>Schutz der Zivilbevölkerung</li>
+                    <li>Eindämmung von Anomalien</li>
+                    <li>Forschung und Dokumentation</li>
+                    <li>Rekrutierung von Personal</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Aktuelle Operationen</h3>
+                <p>F512 ist derzeit an mehreren kritischen Operationen beteiligt, darunter Feldmissionen in klassifizierten Standorten. Unsere Teams arbeiten rund um die Uhr, um die Sicherheit zu gewährleisten und neue Bedrohungen zu identifizieren.</p>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-button red"></div>
+                        <div class="terminal-button yellow"></div>
+                        <div class="terminal-button green"></div>
+                        <div class="terminal-title">OPERATION_STATUS</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">Operation: STORMBREAKER - Status: Aktiv</div>
+                        <div class="terminal-line">Operation: SILENT_WATCH - Status: Überwachung</div>
+                        <div class="terminal-line">Operation: CLEAN_SWEEP - Status: Abgeschlossen</div>
+                        <div class="terminal-line">Operation: HORIZON - Status: Planungsphase</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCP Knowledge section -->
+        <section class="knowledge-section" id="knowledge">
+            <h3>SCP Wissensdatenbank</h3>
+            <div class="knowledge-grid">
+                <div class="knowledge-item" onclick="window.open('http://www.scp-wiki.net/', '_blank')">
+                    <i class="fas fa-book"></i>
+                    <h4>SCP Wiki</h4>
+                    <p>Offizielles SCP Foundation Wiki</p>
+                </div>
+                <div class="knowledge-item" onclick="window.open('https://scp-int.wikidot.com/', '_blank')">
+                    <i class="fas fa-globe"></i>
+                    <h4>SCP International</h4>
+                    <p>Internationale SCP-Ressourcen</p>
+                </div>
+                <div class="knowledge-item" onclick="window.open('https://scp-wiki-de.wikidot.com/', '_blank')">
+                    <i class="fas fa-language"></i>
+                    <h4>SCP Deutsch</h4>
+                    <p>Deutsche SCP-Ressourcen</p>
+                </div>
+                <div class="knowledge-item" onclick="window.open('https://www.scpwiki.com/scp-series', '_blank')">
+                    <i class="fas fa-list"></i>
+                    <h4>SCP Serien</h4>
+                    <p>Vollständige SCP-Objektliste</p>
+                </div>
+                <div class="knowledge-item" onclick="window.open('https://scp-wiki.wikidot.com/secure-facilities-locations', '_blank')">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h4>Standorte</h4>
+                    <p>SCP-Einrichtungen und Standorte</p>
+                </div>
+                <div class="knowledge-item" onclick="window.open('https://scp-wiki.wikidot.com/task-forces', '_blank')">
+                    <i class="fas fa-users"></i>
+                    <h4>Task Forces</h4>
+                    <p>Mobile Task Forces der Foundation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Protocols section -->
+        <section class="info-section" id="protocols">
+            <div class="info-card">
+                <h3>Standardprotokolle</h3>
+                <p>F512 folgt den strengsten Protokollen der SCP Foundation bei der Handhabung anomaler Objekte und Wesen. Unsere Verfahren sind auf maximale Sicherheit und Effizienz ausgelegt.</p>
+                <ul>
+                    <li>Containment Protocols für Safe-, Euclid- und Keter-Klasse Objekte</li>
+                    <li>Notfallverfahren bei Containment-Breach</li>
+                    <li>Decontaminationsprotokolle für Personal und Ausrüstung</li>
+                    <li>Informationskontrolle und Geheimhaltung</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Ausrüstungsrichtlinien</h3>
+                <p>Unsere Einsatzteams sind mit spezialisierter Ausrüstung ausgestattet, die für die Handhabung verschiedener Anomalien konzipiert wurde. Jedes Teammitglied ist geschult im Umgang mit dieser Ausrüstung.</p>
+                <ul>
+                    <li>Standardbewaffnung: modifizierte M4A1 und Desert Eagle</li>
+                    <li>Schutzausrüstung: ballistische Westen, Helm mit HUD</li>
+                    <li>Spezialausrüstung: reality-Anker, memetische Schutzbrillen</li>
+                    <li>Kommunikation: verschlüsselte Funkgeräte mit Störschutz</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <h3>Bauprotokolle</h3>
+                <p>Die Bauanweisungen für unsere Einrichtungen folgen den höchsten Sicherheitsstandards der Foundation. Jede Anlage ist darauf ausgelegt, selbst die gefährlichsten Anomalien sicher zu enthalten.</p>
+                <ul>
+                    <li>Mehrschichtige Containment-Zellen</li>
+                    <li>Redundante Sicherheitssysteme</li>
+                    <li>Automatisierte Notfallversiegelungen</li>
+                    <li>Isolierte Energie- und Lebenserhaltungssysteme</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Join section -->
+        <section class="join-section" id="join">
+            <h3>Treten Sie F512 bei</h3>
+            <p>F512 rekrutiert ständig qualifizierte Kandidaten für verschiedene Positionen innerhalb unserer Organisation. Wenn Sie Interesse daran haben, an der Frontlinie der anomalen Forschung und containment zu arbeiten, sind Sie bei uns richtig.</p>
+            <button class="cta-button" id="joinBtn">Jetzt Bewerben</button>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://pknlegacy.github.io/SCP-Foundation512_HomePage/">Home</a>
+            <a href="https://pknlegacy.github.io/SCP-Terminal512/">Terminal Access</a>
+            <a href="#knowledge">SCP Knowledge</a>
+            <a href="#protocols">Protocols</a>
+            <a href="#join">Join F512</a>
+            <a href="https://www.youtube.com/@PknLegacy" target="_blank">YouTube</a>
+        </div>
+        <div class="copyright">
+            &copy; 2023 F512 Division. Alle Rechte vorbehalten. | SCP Foundation
+        </div>
+    </footer>
+
+    <!-- Join Modal -->
+    <div class="modal" id="joinModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3>F512 Beitrittsantrag</h3>
+            <p>Um F512 beizutreten, müssen Sie zunächst verifizieren, dass Sie kein Roboter sind.</p>
+            
+            <div class="verification-container">
+                <div class="verification-puzzle" id="verificationPuzzle">
+                    <div class="puzzle-slot" style="top: 45px; left: 120px;"></div>
+                    <div class="puzzle-piece" id="puzzlePiece" style="top: 45px; left: 20px;"></div>
+                </div>
+            </div>
+            
+            <div id="nameForm" style="display: none;">
+                <div class="form-group">
+                    <label for="userName">Vollständiger Name:</label>
+                    <input type="text" id="userName" placeholder="Geben Sie Ihren Namen ein">
+                </div>
+                <button class="cta-button" id="submitName">Absenden</button>
+            </div>
+            
+            <div id="discordLink" style="display: none;">
+                <p>Vielen Dank für Ihre Bewerbung! Klicken Sie auf den folgenden Link, um unserem Discord-Server beizutreten:</p>
+                <a href="https://discord.gg/xkPS2W9EJW" target="_blank" class="cta-button" style="display: block; text-align: center; margin-top: 20px;">Discord Server Beitreten</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3>Einstellungen</h3>
+            <span class="close-settings" id="closeSettings">&times;</span>
+        </div>
+        
+        <div class="setting-item">
+            <h4>Name</h4>
+            <input type="text" id="settingsName" placeholder="Ihr Name">
+        </div>
+        
+        <div class="setting-item">
+            <h4>Dunkler Modus</h4>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="setting-item">
+            <h4>Sprache</h4>
+            <select id="languageSelect">
+                <option value="de">Deutsch</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+        
+        <div class="setting-item">
+            <h4>Benachrichtigungen</h4>
+            <label class="toggle-switch">
+                <input type="checkbox" id="notificationsToggle" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="setting-item">
+            <h4>Vollbildmodus</h4>
+            <label class="toggle-switch">
+                <input type="checkbox" id="fullscreenToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <div class="setting-item">
+            <button class="cta-button" id="saveSettings">Einstellungen Speichern</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <h4>Benachrichtigung</h4>
+        <p id="notificationText">Dies ist eine Benachrichtigung.</p>
+    </div>
+
+    <!-- Notification Permission Banner -->
+    <div class="notification-banner" id="notificationBanner">
+        <p>Möchten Sie Benachrichtigungen von F512 erhalten?</p>
+        <div>
+            <button class="allow-btn" id="allowNotifications">Erlauben</button>
+            <button class="deny-btn" id="denyNotifications">Ablehnen</button>
+        </div>
+    </div>
+
+    <!-- Fullscreen Button -->
+    <div class="fullscreen-btn" id="fullscreenBtn">
+        <i class="fas fa-expand"></i>
+    </div>
+
+    <!-- Hidden codes -->
+    <div class="hidden-code">
+        <a href="https://www.youtube.com/@PknLegacy" id="hiddenLink1">Hidden Link 1</a>
+        <a href="https://www.youtube.com/@PknLegacy" id="hiddenLink2">Hidden Link 2</a>
+        <a href="https://www.youtube.com/@PknLegacy" id="hiddenLink3">Hidden Link 3</a>
+    </div>
+
+    <script>
+        // Disable right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Loading screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+
+        // Notification permission
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if ('Notification' in window && Notification.permission === 'default') {
+                    document.getElementById('notificationBanner').classList.add('show');
+                }
+            }, 3000);
+        });
+
+        document.getElementById('allowNotifications').addEventListener('click', function() {
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'granted') {
+                    showNotification('Benachrichtigungen aktiviert', 'Sie erhalten jetzt Benachrichtigungen von F512.');
+                }
+                document.getElementById('notificationBanner').classList.remove('show');
+            });
+        });
+
+        document.getElementById('denyNotifications').addEventListener('click', function() {
+            document.getElementById('notificationBanner').classList.remove('show');
+        });
+
+        // Show notification function
+        function showNotification(title, message) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: message,
+                    icon: 'https://picsum.photos/seed/f512logo/50/50.jpg'
+                });
+            }
+            
+            const notification = document.getElementById('notification');
+            document.getElementById('notificationText').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(function() {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Settings panel
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.add('open');
+        });
+
+        document.getElementById('closeSettings').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.remove('open');
+        });
+
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+
+        // Load settings
+        window.addEventListener('load', function() {
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggle').checked = true;
+            }
+            
+            if (localStorage.getItem('userName')) {
+                document.getElementById('settingsName').value = localStorage.getItem('userName');
+            }
+        });
+
+        // Save settings
+        document.getElementById('saveSettings').addEventListener('click', function() {
+            const userName = document.getElementById('settingsName').value;
+            if (userName) {
+                localStorage.setItem('userName', userName);
+            }
+            
+            showNotification('Einstellungen gespeichert', 'Ihre Einstellungen wurden erfolgreich gespeichert.');
+            document.getElementById('settingsPanel').classList.remove('open');
+        });
+
+        // Fullscreen
+        document.getElementById('fullscreenBtn').addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        document.getElementById('fullscreenToggle').addEventListener('change', function() {
+            if (this.checked) {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                }
+            } else {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // Join modal
+        document.getElementById('joinBtn').addEventListener('click', function() {
+            document.getElementById('joinModal').style.display = 'flex';
+        });
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('joinModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('joinModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Verification puzzle
+        const puzzlePiece = document.getElementById('puzzlePiece');
+        const puzzleSlot = document.querySelector('.puzzle-slot');
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        puzzlePiece.addEventListener('mousedown', startDragging);
+
+        function startDragging(e) {
+            isDragging = true;
+            offsetX = e.clientX - puzzlePiece.offsetLeft;
+            offsetY = e.clientY - puzzlePiece.offsetTop;
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                
+                puzzlePiece.style.left = x + 'px';
+                puzzlePiece.style.top = y + 'px';
+                
+                // Check if puzzle piece is in the slot
+                const pieceRect = puzzlePiece.getBoundingClientRect();
+                const slotRect = puzzleSlot.getBoundingClientRect();
+                
+                if (
+                    pieceRect.left >= slotRect.left - 10 &&
+                    pieceRect.right <= slotRect.right + 10 &&
+                    pieceRect.top >= slotRect.top - 10 &&
+                    pieceRect.bottom <= slotRect.bottom + 10
+                ) {
+                    puzzlePiece.style.left = (slotRect.left - puzzlePiece.parentElement.getBoundingClientRect().left) + 'px';
+                    puzzlePiece.style.top = (slotRect.top - puzzlePiece.parentElement.getBoundingClientRect().top) + 'px';
+                    isDragging = false;
+                    puzzlePiece.removeEventListener('mousedown', startDragging);
+                    
+                    // Show name form
+                    setTimeout(function() {
+                        document.getElementById('nameForm').style.display = 'block';
+                    }, 500);
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Submit name
+        document.getElementById('submitName').addEventListener('click', function() {
+            const userName = document.getElementById('userName').value;
+            if (userName.trim() !== '') {
+                // Save name to localStorage (simulating online storage)
+                const logs = JSON.parse(localStorage.getItem('f512Logs') || '[]');
+                logs.push({
+                    name: userName,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('f512Logs', JSON.stringify(logs));
+                
+                // Show Discord link
+                document.getElementById('nameForm').style.display = 'none';
+                document.getElementById('discordLink').style.display = 'block';
+                
+                showNotification('Verifizierung erfolgreich', 'Willkommen bei F512, ' + userName + '!');
+            } else {
+                showNotification('Fehler', 'Bitte geben Sie einen gültigen Namen ein.');
+            }
+        });
+
+        // Learn more button
+        document.getElementById('learnMoreBtn').addEventListener('click', function() {
+            document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Hidden codes - redirect to YouTube on specific key combinations
+        let hiddenCodeSequence = '';
+        const hiddenCode = 'F512';
+        
+        document.addEventListener('keydown', function(e) {
+            hiddenCodeSequence += e.key;
+            
+            if (hiddenCodeSequence.length > hiddenCode.length) {
+                hiddenCodeSequence = hiddenCodeSequence.slice(-hiddenCode.length);
+            }
+            
+            if (hiddenCodeSequence === hiddenCode) {
+                window.open('https://www.youtube.com/@PknLegacy', '_blank');
+                hiddenCodeSequence = '';
+            }
+        });
+
+        // Click on specific elements to redirect to YouTube
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('scp-badge')) {
+                window.open('https://www.youtube.com/@PknLegacy', '_blank');
+            }
+        });
+    </script>
+</body>
+</html>
